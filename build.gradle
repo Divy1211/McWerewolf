@@ -1,0 +1,73 @@
+plugins {
+    id 'java'
+    id("xyz.jpenilla.run-paper") version "2.2.0"
+    id("io.papermc.paperweight.userdev") version "1.5.8"
+    id "com.github.johnrengelman.shadow" version "7.1.1"
+}
+
+group = 'alian713.mc'
+version = '0.1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+    maven {
+        name = "more-pdc"
+        url = 'https://hub.jeff-media.com/nexus/repository/jeff-media-public/'
+    }
+}
+
+dependencies {
+//    compileOnly "io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT"
+    paperweight.paperDevBundle("1.20-R0.1-SNAPSHOT")
+    implementation 'com.jeff_media:MorePersistentDataTypes:2.4.0'
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.20.2")
+    }
+}
+
+tasks.assemble {
+    dependsOn(reobfJar)
+}
+
+shadowJar {
+    relocate 'com.jeff_media.morepersistentdatatypes', 'alian713.mc.mcwerewolf.morepersistentdatatypes'
+}

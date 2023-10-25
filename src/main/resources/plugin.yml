@@ -1,0 +1,69 @@
+name: McWerewolf
+version: '${version}'
+main: alian713.mc.mcwerewolf.McWerewolf
+api-version: '1.20'
+author: 'Alian713'
+
+permissions:
+  werewolf.gm:
+    description: "Commands only admins should be able to run"
+    default: false
+  werewolf.player:
+    description: "Commands everyone can run"
+    default: true
+
+commands:
+  host-game:
+    description: "Host a game of Werewolf"
+    usage: "/host-game"
+    permission: werewolf.player
+#  list-games:
+#    description: "List all open games of Werewolf"
+#    usage: "/list-games"
+#    permission: werewolf.player
+#  list-players:
+#    description: "List all players in the game of Werewolf hosted by the specified player"
+#    usage: "/list-players <Host Player Name>"
+#    permission: werewolf.player
+#  start-game:
+#    description: "Start the game of Werewolf that you are hosting"
+#    usage: "/start-game"
+#    permission: werewolf.player
+#  stop-game:
+#    description: "Stop/Cancel the game of Werewolf that you are hosting"
+#    aliases: [cancel-game]
+#    usage: "/stop-game"
+#    permission: werewolf.player
+#  join-game:
+#    description: "Join the werewolf game hosted by the specified player"
+#    usage: "/join-game <Host Player Name>"
+#    permission: werewolf.player
+#  leave-game:
+#    description: "Leave the werewolf game hosted by the specified player"
+#    usage: "/leave-game <Host Player Name>"
+#    permission: werewolf.player
+#
+#  see-player:
+#    description: "See if the specified player is a werewolf [seer; night phase]"
+#    usage: "/see-player <Host Player Name>"
+#    permission: werewolf.player
+#  eat-player:
+#    description: "Eat the specified player [chosen; werewolf; night phase]"
+#    usage: "/eat-player <Host Player Name>"
+#    permission: werewolf.player
+#  save-player:
+#    description: "Save the specified player from being killed [medic; night phase]"
+#    usage: "/save-player <Host Player Name>"
+#    permission: werewolf.player
+#  nom-player:
+#    description: "Nominate the specified player for being executed"
+#    usage: "/nom-player <Host Player Name>"
+#    permission: werewolf.player
+#  exec:
+#    description: "Vote to execute the player currently on the chopping block"
+#    usage: "/exec"
+#    permission: werewolf.player
+#  no-exec:
+#    description: "Vote to NOT execute the player currently on the chopping block"
+#    usage: "/no-exec"
+#    permission: werewolf.player
