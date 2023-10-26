@@ -27,6 +27,7 @@ public final class McWerewolf extends JavaPlugin {
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
         worldPdc.remove(HOSTS_KEY);
+        worldPdc.remove(DAY_KEY);
     }
 
     @Override
@@ -48,6 +49,8 @@ public final class McWerewolf extends JavaPlugin {
         new DayPhase();
         new NightPhase();
         new SeePlayer();
+        new SavePlayer();
+        new EatPlayer();
     }
 
     @Override

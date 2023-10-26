@@ -54,6 +54,13 @@ public class DayPhase extends CommandBase {
         phaseMap.put(playerUuid, true);
         worldPdc.set(plugin.DAY_KEY, DataType.asMap(DataType.STRING, DataType.BOOLEAN), phaseMap);
         Msg.broadcast(hostPlayerMap.get(playerUuid), "&aIt is now day time! Discuss");
+        for(var uuid : hostPlayerMap.get(playerUuid)) {
+            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+            if(p == null) {
+                continue;
+            }
+            p.getPersistentDataContainer().set(plugin.IS_SAFE, DataType.BOOLEAN, false);
+        }
         return true;
     }
 }

@@ -72,8 +72,12 @@ public class StartGame extends CommandBase {
             var role = roles.get(i++);
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 
+            var pdc = p.getPersistentDataContainer();
+            pdc.set(plugin.ROLE_KEY, DataType.STRING, role);
+            pdc.set(plugin.ALIVE_KEY, DataType.BOOLEAN, true);
+            pdc.set(plugin.IS_SAFE, DataType.BOOLEAN, false);
+
             Msg.send(p, "&aThe game of werewolf has started!");
-            p.getPersistentDataContainer().set(plugin.ROLE_KEY, DataType.STRING, role);
             Msg.send(p, "&aYour role is: &b"+role);
         }
         Bukkit.dispatchCommand(player, "night-phase");

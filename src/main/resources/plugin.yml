@@ -54,14 +54,14 @@ commands:
     description: "See if the specified player is a werewolf [seer; night phase]"
     usage: "/see-player <Player Name>"
     permission: werewolf.player
-#  eat-player:
-#    description: "Eat the specified player [chosen; werewolf; night phase]"
-#    usage: "/eat-player <Player Name>"
-#    permission: werewolf.player
-#  save-player:
-#    description: "Save the specified player from being killed [medic; night phase]"
-#    usage: "/save-player <Player Name>"
-#    permission: werewolf.player
+  eat-player:
+    description: "Eat the specified player [chosen; werewolf; night phase]"
+    usage: "/eat-player <Player Name>"
+    permission: werewolf.player
+  save-player:
+    description: "Save the specified player from being killed [medic; night phase]"
+    usage: "/save-player <Player Name>"
+    permission: werewolf.player
 #  nom-player:
 #    description: "Nominate the specified player for being executed"
 #    usage: "/nom-player <Player Name>"

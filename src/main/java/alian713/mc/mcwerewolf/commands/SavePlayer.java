@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SeePlayer extends CommandBase {
-    public SeePlayer() {
-        super("see-player", true, true);
+public class SavePlayer extends CommandBase {
+    public SavePlayer() {
+        super("save-player", true, true);
     }
 
     @Override
@@ -33,19 +33,14 @@ public class SeePlayer extends CommandBase {
             return true;
         }
 
-        if(!pdc.get(plugin.ALIVE_KEY, DataType.BOOLEAN)) {
-            Msg.send(player, "&4Dead players cannot use night time actions!");
-            return true;
-        }
-
         var role = pdc.get(plugin.ROLE_KEY, DataType.STRING);
-        if(!role.equals(Role.SEER)) {
-            Msg.send(player, "&4You are not the seer!");
+        if(!role.equals(Role.MEDIC)) {
+            Msg.send(player, "&4You are not the Medic!");
             return true;
         }
 
         if(playerUuid.equals(targetUuid)) {
-            Msg.send(player, "&4Why in gods name are you trying to see your own role?");
+            Msg.send(player, "&4You cannot save yourself!");
             return true;
         }
 
@@ -73,15 +68,10 @@ public class SeePlayer extends CommandBase {
             return true;
         }
 
-        var targetRole = target.getPersistentDataContainer().get(plugin.ROLE_KEY, DataType.STRING);
-
-        if(targetRole.equals(Role.WEREWOLF)) {
-            Msg.send(player, "&aThat player is: &b"+Role.WEREWOLF);
-        } else {
-            Msg.send(player, "&aThat player is: &b"+Role.VILLAGER);
-        }
-
+        target.getPersistentDataContainer().set(plugin.IS_SAFE, DataType.BOOLEAN, true);
         pdc.set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, true);
+
+        Msg.send(player, "&aThat player is now safe from the werewolves for this night!");
         return true;
     }
 }

@@ -39,9 +39,9 @@ public class PlayerListener implements Listener {
         var plugin = McWerewolf.getInstance();
         pdc.remove(plugin.IN_GAME_KEY);
         pdc.remove(plugin.ROLE_KEY);
-        pdc.remove(plugin.DAY_KEY);
         pdc.remove(plugin.ALIVE_KEY);
         pdc.remove(plugin.USED_ACTION_KEY);
+        pdc.remove(plugin.IS_SAFE);
     }
 
     @EventHandler
@@ -65,6 +65,10 @@ public class PlayerListener implements Listener {
         var hostUuid = pdc.get(plugin.IN_GAME_KEY, DataType.STRING);
         var hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
         if (!hostPlayerMap.containsKey(hostUuid)) {
+            clearKeys(pdc);
+            return;
+        }
+        if (!hostPlayerMap.get(hostUuid).contains(player.getUniqueId().toString())) {
             clearKeys(pdc);
         }
     }
