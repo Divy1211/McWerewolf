@@ -15,9 +15,10 @@ public final class McWerewolf extends JavaPlugin {
 
     public final NamespacedKey IN_GAME_KEY = new NamespacedKey(this, "in_game");
     public final NamespacedKey ROLE_KEY = new NamespacedKey(this, "role");
-    public final NamespacedKey ALIVE_KEY = new NamespacedKey(this, "alive");
+    public final NamespacedKey IS_EATEN_KEY = new NamespacedKey(this, "eaten");
+    public final NamespacedKey IS_ALIVE_KEY = new NamespacedKey(this, "alive");
     public final NamespacedKey USED_ACTION_KEY = new NamespacedKey(this, "used_action");
-    public final NamespacedKey IS_SAFE = new NamespacedKey(this, "is_safe");
+    public final NamespacedKey IS_SAFE_KEY = new NamespacedKey(this, "is_safe");
 
     public static McWerewolf getInstance() {
         return instance;

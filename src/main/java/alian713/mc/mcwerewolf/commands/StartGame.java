@@ -19,7 +19,7 @@ public class StartGame extends CommandBase {
 
     private List<String> generateRoles(int numPlayers) {
         int numWolves = numPlayers/8+1;
-        List<String> roles = List.of(Role.SEER, Role.MEDIC);
+        List<String> roles = List.of(Role.WEREWOLF, Role.MEDIC);
         return roles;
 
 //        for(int i = 0; i < numWolves; ++i) {
@@ -74,8 +74,9 @@ public class StartGame extends CommandBase {
 
             var pdc = p.getPersistentDataContainer();
             pdc.set(plugin.ROLE_KEY, DataType.STRING, role);
-            pdc.set(plugin.ALIVE_KEY, DataType.BOOLEAN, true);
-            pdc.set(plugin.IS_SAFE, DataType.BOOLEAN, false);
+            pdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, true);
+            pdc.set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, false);
+            pdc.set(plugin.IS_EATEN_KEY, DataType.BOOLEAN, false);
 
             Msg.send(p, "&aThe game of werewolf has started!");
             Msg.send(p, "&aYour role is: &b"+role);

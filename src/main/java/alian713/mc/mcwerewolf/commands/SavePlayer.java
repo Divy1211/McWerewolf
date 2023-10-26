@@ -39,10 +39,10 @@ public class SavePlayer extends CommandBase {
             return true;
         }
 
-        if(playerUuid.equals(targetUuid)) {
-            Msg.send(player, "&4You cannot save yourself!");
-            return true;
-        }
+//        if(playerUuid.equals(targetUuid)) {
+//            Msg.send(player, "&4You cannot save yourself!");
+//            return true;
+//        }
 
         Map<String, Boolean> phaseMap = new HashMap<>();
         if (worldPdc.has(plugin.DAY_KEY)) {
@@ -68,7 +68,7 @@ public class SavePlayer extends CommandBase {
             return true;
         }
 
-        target.getPersistentDataContainer().set(plugin.IS_SAFE, DataType.BOOLEAN, true);
+        target.getPersistentDataContainer().set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, true);
         pdc.set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, true);
 
         Msg.send(player, "&aThat player is now safe from the werewolves for this night!");

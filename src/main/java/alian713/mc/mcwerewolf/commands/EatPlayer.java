@@ -77,13 +77,15 @@ public class EatPlayer extends CommandBase {
             return true;
         }
 
+        if(!targetPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+            Msg.send(player, "&4That player is already dead!");
+            return true;
+        }
+
         pdc.set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, true);
         Msg.send(player, "&aThat player will be eaten!");
 
-        if(!targetPdc.get(plugin.IS_SAFE, DataType.BOOLEAN)) {
-            targetPdc.set(plugin.ALIVE_KEY, DataType.BOOLEAN, false);
-        }
-
+        targetPdc.set(plugin.IS_EATEN_KEY, DataType.BOOLEAN, true);
         return true;
     }
 }

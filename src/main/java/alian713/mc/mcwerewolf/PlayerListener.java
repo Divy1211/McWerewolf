@@ -39,9 +39,10 @@ public class PlayerListener implements Listener {
         var plugin = McWerewolf.getInstance();
         pdc.remove(plugin.IN_GAME_KEY);
         pdc.remove(plugin.ROLE_KEY);
-        pdc.remove(plugin.ALIVE_KEY);
+        pdc.remove(plugin.IS_ALIVE_KEY);
         pdc.remove(plugin.USED_ACTION_KEY);
-        pdc.remove(plugin.IS_SAFE);
+        pdc.remove(plugin.IS_SAFE_KEY);
+        pdc.remove(plugin.IS_EATEN_KEY);
     }
 
     @EventHandler

@@ -6,7 +6,6 @@ import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,13 +52,23 @@ public class DayPhase extends CommandBase {
 
         phaseMap.put(playerUuid, true);
         worldPdc.set(plugin.DAY_KEY, DataType.asMap(DataType.STRING, DataType.BOOLEAN), phaseMap);
-        Msg.broadcast(hostPlayerMap.get(playerUuid), "&aIt is now day time! Discuss");
-        for(var uuid : hostPlayerMap.get(playerUuid)) {
+
+        var players = hostPlayerMap.get(playerUuid);
+        Msg.broadcast(players, "&aIt is now day time! Discuss");
+        for(var uuid : players) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
             if(p == null) {
                 continue;
             }
-            p.getPersistentDataContainer().set(plugin.IS_SAFE, DataType.BOOLEAN, false);
+            var playerPdc = p.getPersistentDataContainer();
+            var isEaten = playerPdc.get(plugin.IS_EATEN_KEY, DataType.BOOLEAN);
+            var isSafe = playerPdc.get(plugin.IS_SAFE_KEY, DataType.BOOLEAN);
+
+            if(!isSafe && isEaten) {
+                Msg.broadcast(players, "&c"+p.getName()+" has been eaten!");
+                playerPdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, false);
+            }
+            playerPdc.set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, false);
         }
         return true;
     }

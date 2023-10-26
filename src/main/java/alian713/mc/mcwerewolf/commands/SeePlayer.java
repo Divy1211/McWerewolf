@@ -33,7 +33,7 @@ public class SeePlayer extends CommandBase {
             return true;
         }
 
-        if(!pdc.get(plugin.ALIVE_KEY, DataType.BOOLEAN)) {
+        if(!pdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
             Msg.send(player, "&4Dead players cannot use night time actions!");
             return true;
         }
