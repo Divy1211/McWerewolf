@@ -7,17 +7,15 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerQuitListener implements Listener {
+public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
         var plugin = McWerewolf.getInstance();
-
-        plugin.getLogger().info("Player has QUIT");
-
         var inGameKey = new NamespacedKey(plugin, "in_game");
         var playerUuid = player.getUniqueId().toString();
         var pdc = player.getPersistentDataContainer();
@@ -33,5 +31,16 @@ public class PlayerQuitListener implements Listener {
         }
 
         LeaveGame.onLeave(player);
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
+        var plugin = McWerewolf.getInstance();
+        var inGameKey = new NamespacedKey(plugin, "in_game");
+        var pdc = player.getPersistentDataContainer();
+
+        pdc.remove(inGameKey);
     }
 }

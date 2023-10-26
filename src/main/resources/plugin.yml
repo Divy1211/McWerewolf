@@ -17,18 +17,14 @@ commands:
     description: "Host a game of Werewolf"
     usage: "/host-game"
     permission: werewolf.player
-  kick-player:
-    description: "Kick a certain player from your game of werewolf"
-    usage: "/kick-player"
+  list-games:
+    description: "List all open games of Werewolf"
+    usage: "/list-games"
     permission: werewolf.player
-#  list-games:
-#    description: "List all open games of Werewolf"
-#    usage: "/list-games"
-#    permission: werewolf.player
-#  list-players:
-#    description: "List all players in the game of Werewolf hosted by the specified player"
-#    usage: "/list-players <Host Player Name>"
-#    permission: werewolf.player
+  list-players:
+    description: "List all players in the game of Werewolf hosted by the specified player"
+    usage: "/list-players <Host Player Name>"
+    permission: werewolf.player
 #  start-game:
 #    description: "Start the game of Werewolf that you are hosting"
 #    usage: "/start-game"
