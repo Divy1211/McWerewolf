@@ -2,6 +2,7 @@ package alian713.mc.mcwerewolf.commands;
 
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
+import alian713.mc.mcwerewolf.Role;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -55,6 +56,9 @@ public class DayPhase extends CommandBase {
 
         var players = hostPlayerMap.get(playerUuid);
         Msg.broadcast(players, "&aIt is now day time! Discuss");
+
+        int numWolves = 0;
+        int numAlive = 0;
         for(var uuid : players) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
             if(p == null) {
@@ -68,7 +72,19 @@ public class DayPhase extends CommandBase {
                 Msg.broadcast(players, "&c"+p.getName()+" has been eaten!");
                 playerPdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, false);
             }
+            if(playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+                if(playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
+                    ++numWolves;
+                } else {
+                    ++numAlive;
+                }
+            }
             playerPdc.set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, false);
+        }
+
+        if(numWolves == numAlive) {
+            Msg.broadcast(players, "&cThe werewolves have won the game!");
+            CancelGame.onCancel(player, true);
         }
         return true;
     }

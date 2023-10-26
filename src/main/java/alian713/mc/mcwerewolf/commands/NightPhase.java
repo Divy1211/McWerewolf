@@ -3,6 +3,7 @@ package alian713.mc.mcwerewolf.commands;
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
 import alian713.mc.mcwerewolf.PlayerListener;
+import alian713.mc.mcwerewolf.Role;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -56,13 +57,29 @@ public class NightPhase extends CommandBase {
 
         phaseMap.put(playerUuid, false);
         worldPdc.set(plugin.DAY_KEY, DataType.asMap(DataType.STRING, DataType.BOOLEAN), phaseMap);
-        Msg.broadcast(hostPlayerMap.get(playerUuid), "&aIt is now night time! Use your night phase action");
-        for(var uuid : hostPlayerMap.get(playerUuid)) {
+
+        var players = hostPlayerMap.get(playerUuid);
+
+        Msg.broadcast(players, "&aIt is now night time! Use your night phase action");
+
+        int numWolves = 0;
+        for(var uuid : players) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
             if(p == null) {
                 continue;
             }
-            p.getPersistentDataContainer().set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, false);
+            var playerPdc = p.getPersistentDataContainer();
+            playerPdc.set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, false);
+            if(
+                playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)
+                && playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)
+            ) {
+                ++numWolves;
+            }
+        }
+        if(numWolves == 0) {
+            Msg.broadcast(players, "&aThe villagers have won the game!");
+            CancelGame.onCancel(player, true);
         }
         return true;
     }

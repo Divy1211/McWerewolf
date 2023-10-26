@@ -2,12 +2,10 @@ package alian713.mc.mcwerewolf.commands;
 
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
-import alian713.mc.mcwerewolf.PlayerListener;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +19,10 @@ public class CancelGame extends CommandBase {
     }
 
     public static boolean onCancel(@NotNull Player player) {
+        return onCancel(player, false);
+    }
+
+    public static boolean onCancel(@NotNull Player player, boolean fin) {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
@@ -40,12 +42,16 @@ public class CancelGame extends CommandBase {
         }
 
         var players = hostPlayerMap.get(playerUuid);
-        Msg.broadcast(players, "&c" + player.getName() + " has cancelled their game of werewolf!", true);
+        if(!fin) {
+            Msg.broadcast(players, "&c" + player.getName() + " has cancelled their game of werewolf!", true);
+        }
 
         hostPlayerMap.remove(playerUuid);
 
         worldPdc.set(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
-        Msg.send(player, "&cYou have cancelled your game of werewolf!");
+        if(!fin){
+            Msg.send(player, "&cYou have cancelled your game of werewolf!");
+        }
         return true;
     }
 
