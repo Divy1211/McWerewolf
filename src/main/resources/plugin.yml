@@ -25,10 +25,6 @@ commands:
     description: "List all players in the game of Werewolf hosted by the specified player"
     usage: "/list-players <Host Player Name>"
     permission: werewolf.player
-#  start-game:
-#    description: "Start the game of Werewolf that you are hosting"
-#    usage: "/start-game"
-#    permission: werewolf.player
   cancel-game:
     description: "Cancel the game of Werewolf that you are hosting"
     usage: "/cancel-game"
@@ -40,6 +36,10 @@ commands:
   leave-game:
     description: "Leave the werewolf game hosted by the specified player"
     usage: "/leave-game <Host Player Name>"
+    permission: werewolf.player
+  start-game:
+    description: "Start the game of Werewolf that you are hosting"
+    usage: "/start-game"
     permission: werewolf.player
 #
 #  see-player:

@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,6 +25,7 @@ public class LeaveGame extends CommandBase {
         var worldPdc = overworld.getPersistentDataContainer();
         var hostsKey = new NamespacedKey(plugin, "hosts");
         var inGameKey = new NamespacedKey(plugin, "in_game");
+        var roleKey = new NamespacedKey(plugin, "role");
         var playerUuid = player.getUniqueId().toString();
 
         var pdc = player.getPersistentDataContainer();
@@ -37,7 +37,7 @@ public class LeaveGame extends CommandBase {
 
         var targetUuid = pdc.get(inGameKey, DataType.STRING);
 
-        if(Objects.equals(targetUuid, playerUuid)) {
+        if (playerUuid.equals(targetUuid)) {
             Msg.send(player, "&4You cannot leave your own game. Use /cancel-game if you wish to cancel the game!");
             return true;
         }
@@ -47,11 +47,12 @@ public class LeaveGame extends CommandBase {
 
         var players = hostPlayerMap.get(targetUuid);
         players.remove(playerUuid);
-        for(String uuid : players) {
+        for (String uuid : players) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
             Msg.send(p, "&c" + player.getName() + " has left the game of werewolf!");
         }
         pdc.remove(inGameKey);
+        pdc.remove(roleKey);
         worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&cYou have left the game of werewolf!");
         return true;
