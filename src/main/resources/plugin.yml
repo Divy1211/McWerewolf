@@ -41,10 +41,10 @@ commands:
     description: "Join the werewolf game hosted by the specified player"
     usage: "/join-game <Host Player Name>"
     permission: werewolf.player
-#  leave-game:
-#    description: "Leave the werewolf game hosted by the specified player"
-#    usage: "/leave-game <Host Player Name>"
-#    permission: werewolf.player
+  leave-game:
+    description: "Leave the werewolf game hosted by the specified player"
+    usage: "/leave-game <Host Player Name>"
+    permission: werewolf.player
 #
 #  see-player:
 #    description: "See if the specified player is a werewolf [seer; night phase]"

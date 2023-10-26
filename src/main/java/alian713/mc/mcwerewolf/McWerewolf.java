@@ -3,6 +3,7 @@ package alian713.mc.mcwerewolf;
 import alian713.mc.mcwerewolf.commands.CancelGame;
 import alian713.mc.mcwerewolf.commands.HostGame;
 import alian713.mc.mcwerewolf.commands.JoinGame;
+import alian713.mc.mcwerewolf.commands.LeaveGame;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class McWerewolf extends JavaPlugin {
@@ -17,10 +18,12 @@ public final class McWerewolf extends JavaPlugin {
         instance = this;
 
         getLogger().info("Enabled McWerewolf!");
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
         new HostGame();
         new JoinGame();
         new CancelGame();
+        new LeaveGame();
         // getCommand("list-games").setExecutor(new ListGames());
         // getCommand("list-players").setExecutor(new ListPlayers());
         // getCommand("start-game").setExecutor(new StartGame());

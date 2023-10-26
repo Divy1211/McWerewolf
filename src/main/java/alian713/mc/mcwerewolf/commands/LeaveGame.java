@@ -11,16 +11,16 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-
-public class CancelGame extends CommandBase {
-    public CancelGame() {
-        super("cancel-game", false, true);
+public class LeaveGame extends CommandBase {
+    public LeaveGame() {
+        super("leave-game", false, true);
     }
 
-    public static boolean onCancel(@NotNull Player player) {
+    public static boolean onLeave(@NotNull Player player) {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
@@ -28,36 +28,37 @@ public class CancelGame extends CommandBase {
         var inGameKey = new NamespacedKey(plugin, "in_game");
         var playerUuid = player.getUniqueId().toString();
 
-        if (!worldPdc.has(hostsKey)) {
-            Msg.send(player, "&4You are not currently hosting a werewolf game!");
+        var pdc = player.getPersistentDataContainer();
+
+        if (!pdc.has(inGameKey)) {
+            Msg.send(player, "&4You are currently not in a werewolf game!");
+            return true;
+        }
+
+        var targetUuid = pdc.get(inGameKey, DataType.STRING);
+
+        if(Objects.equals(targetUuid, playerUuid)) {
+            Msg.send(player, "&4You cannot leave your own game. Use /cancel-game if you wish to cancel the game!");
             return true;
         }
 
         Map<String, Set<String>> hostPlayerMap;
         hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
 
-        if (!hostPlayerMap.containsKey(playerUuid)) {
-            Msg.send(player, "&4You are not currently hosting a werewolf game!");
-            return true;
-        }
-
-        var players = hostPlayerMap.get(playerUuid);
+        var players = hostPlayerMap.get(targetUuid);
+        players.remove(playerUuid);
         for(String uuid : players) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-            p.getPersistentDataContainer().remove(inGameKey);
-            Msg.send(p, "&c" + player.getName() + " has cancelled their game of werewolf!");
+            Msg.send(p, "&c" + player.getName() + " has left the game of werewolf!");
         }
-
-        hostPlayerMap.remove(playerUuid);
-        player.getPersistentDataContainer().remove(inGameKey);
-
+        pdc.remove(inGameKey);
         worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
-        Msg.send(player, "&cYou have cancelled your game of werewolf!");
+        Msg.send(player, "&cYou have left the game of werewolf!");
         return true;
     }
 
     @Override
     public boolean onCommand(@NotNull Player player) {
-        return onCancel(player);
+        return onLeave(player);
     }
 }

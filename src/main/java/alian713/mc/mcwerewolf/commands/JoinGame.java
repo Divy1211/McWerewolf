@@ -23,8 +23,16 @@ public class JoinGame extends CommandBase {
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
         var hostsKey = new NamespacedKey(plugin, "hosts");
+        var inGameKey = new NamespacedKey(plugin, "in_game");
         var playerUuid = player.getUniqueId().toString();
         var targetUuid = target.getUniqueId().toString();
+
+        var pdc = player.getPersistentDataContainer();
+
+        if(pdc.has(inGameKey)) {
+            Msg.send(player, "&4You are already in a werewolf game!");
+            return true;
+        }
 
         if (!worldPdc.has(hostsKey)) {
             Msg.send(player, "&4That player is not currently hosting a werewolf game!");
@@ -44,8 +52,13 @@ public class JoinGame extends CommandBase {
             Msg.send(player, "&4You are already in " + target.getName() + "'s game of werewolf!");
             return true;
         }
-        players.add(playerUuid);
+        for(String uuid : players) {
+            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+            Msg.send(p, "&a" + player.getName() + " has joined the game of werewolf!");
+        }
 
+        players.add(playerUuid);
+        pdc.set(inGameKey, DataType.STRING, targetUuid);
         worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&aYou have joined " + target.getName() + "'s game of werewolf!");
         return true;

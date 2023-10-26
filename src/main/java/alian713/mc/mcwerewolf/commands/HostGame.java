@@ -28,7 +28,14 @@ public class HostGame extends CommandBase {
         var hostsKey = new NamespacedKey(plugin, "hosts");
         Map<String, Set<String>> hostPlayerMap = new HashMap<>();
         var playerUuid = player.getUniqueId().toString();
+        var inGameKey = new NamespacedKey(plugin, "in_game");
 
+        var pdc = player.getPersistentDataContainer();
+
+        if(pdc.has(inGameKey)) {
+            Msg.send(player, "&4You are already in a werewolf game!");
+            return true;
+        }
 
         if (worldPdc.has(hostsKey)) {
             hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
@@ -43,6 +50,7 @@ public class HostGame extends CommandBase {
         players.add(playerUuid);
         hostPlayerMap.put(playerUuid, players);
 
+        pdc.set(inGameKey, DataType.STRING, playerUuid);
         worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&aYou have hosted a new game of werewolf!");
         return true;
