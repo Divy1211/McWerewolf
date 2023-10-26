@@ -60,7 +60,7 @@ public class NightPhase extends CommandBase {
 
         var players = hostPlayerMap.get(playerUuid);
 
-
+        int numAlive = 0;
         int numWolves = 0;
         for(var uuid : players) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
@@ -69,14 +69,19 @@ public class NightPhase extends CommandBase {
             }
             var playerPdc = p.getPersistentDataContainer();
             playerPdc.set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, false);
-            if(
-                playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)
-                && playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)
-            ) {
-                ++numWolves;
+            if(playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+                if(playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
+                    ++numWolves;
+                } else {
+                    ++numAlive;
+                }
             }
         }
-        if(numWolves == 0) {
+
+        if(numWolves == numAlive) {
+            Msg.broadcast(players, "&cThe werewolves have won the game!");
+            CancelGame.onCancel(player, true);
+        } else if(numWolves == 0) {
             Msg.broadcast(players, "&aThe villagers have won the game!");
             CancelGame.onCancel(player, true);
         } else {

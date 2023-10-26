@@ -44,6 +44,8 @@ public class CancelGame extends CommandBase {
         var players = hostPlayerMap.get(playerUuid);
         if(!fin) {
             Msg.broadcast(players, "&c" + player.getName() + " has cancelled their game of werewolf!", true);
+        } else {
+            Msg.broadcast(players, "The game has ended!", true);
         }
 
         hostPlayerMap.remove(playerUuid);
