@@ -6,12 +6,12 @@ import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.persistence.PersistentDataContainer;
 
 public class PlayerListener implements Listener {
     @EventHandler
@@ -19,16 +19,14 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
 
         var plugin = McWerewolf.getInstance();
-        var inGameKey = new NamespacedKey(plugin, "in_game");
-        var roleKey = new NamespacedKey(plugin, "role");
         var playerUuid = player.getUniqueId().toString();
         var pdc = player.getPersistentDataContainer();
 
-        if (!pdc.has(inGameKey) || pdc.has(roleKey)) {
+        if (!pdc.has(plugin.IN_GAME_KEY) || pdc.has(plugin.ROLE_KEY)) {
             return;
         }
 
-        var targetUuid = pdc.get(inGameKey, DataType.STRING);
+        var targetUuid = pdc.get(plugin.IN_GAME_KEY, DataType.STRING);
 
         if (playerUuid.equals(targetUuid)) {
             CancelGame.onCancel(player);
@@ -37,33 +35,36 @@ public class PlayerListener implements Listener {
         LeaveGame.onLeave(player);
     }
 
+    public static void clearKeys(PersistentDataContainer pdc) {
+        var plugin = McWerewolf.getInstance();
+        pdc.remove(plugin.IN_GAME_KEY);
+        pdc.remove(plugin.ROLE_KEY);
+        pdc.remove(plugin.DAY_KEY);
+        pdc.remove(plugin.ALIVE_KEY);
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         var plugin = McWerewolf.getInstance();
-        var inGameKey = new NamespacedKey(plugin, "in_game");
-        var roleKey = new NamespacedKey(plugin, "role");
         var pdc = player.getPersistentDataContainer();
 
-        if(!pdc.has(inGameKey)) {
-            pdc.remove(roleKey);
+        if (!pdc.has(plugin.IN_GAME_KEY)) {
+            clearKeys(pdc);
             return;
         }
 
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
-        var hostsKey = new NamespacedKey(plugin, "hosts");
-        if(!worldPdc.has(hostsKey)) {
-            pdc.remove(inGameKey);
-            pdc.remove(roleKey);
+        if (!worldPdc.has(plugin.HOSTS_KEY)) {
+            clearKeys(pdc);
             return;
         }
-        var hostUuid = pdc.get(inGameKey, DataType.STRING);
-        var hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
-        if(!hostPlayerMap.containsKey(hostUuid)) {
-            pdc.remove(inGameKey);
-            pdc.remove(roleKey);
+        var hostUuid = pdc.get(plugin.IN_GAME_KEY, DataType.STRING);
+        var hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
+        if (!hostPlayerMap.containsKey(hostUuid)) {
+            clearKeys(pdc);
         }
     }
 }

@@ -10,6 +10,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class McWerewolf extends JavaPlugin {
     private static McWerewolf instance;
 
+    public final NamespacedKey HOSTS_KEY = new NamespacedKey(this, "hosts");
+    public final NamespacedKey IN_GAME_KEY = new NamespacedKey(this, "in_game");
+    public final NamespacedKey ROLE_KEY = new NamespacedKey(this, "role");
+    public final NamespacedKey DAY_KEY = new NamespacedKey(this, "day");
+    public final NamespacedKey ALIVE_KEY = new NamespacedKey(this, "alive");
+
     public static McWerewolf getInstance() {
         return instance;
     }
@@ -17,8 +23,7 @@ public final class McWerewolf extends JavaPlugin {
     private void cleanHostList() {
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
-        var hostsKey = new NamespacedKey(this, "hosts");
-        worldPdc.remove(hostsKey);
+        worldPdc.remove(HOSTS_KEY);
     }
 
     @Override
@@ -37,6 +42,8 @@ public final class McWerewolf extends JavaPlugin {
         new ListGames();
         new ListPlayers();
         new StartGame();
+        new DayPhase();
+        new NightPhase();
     }
 
     @Override

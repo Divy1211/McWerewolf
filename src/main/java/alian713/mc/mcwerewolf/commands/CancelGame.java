@@ -2,6 +2,7 @@ package alian713.mc.mcwerewolf.commands;
 
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
+import alian713.mc.mcwerewolf.PlayerListener;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -23,18 +24,15 @@ public class CancelGame extends CommandBase {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
-        var hostsKey = new NamespacedKey(plugin, "hosts");
-        var inGameKey = new NamespacedKey(plugin, "in_game");
-        var roleKey = new NamespacedKey(plugin, "role");
         var playerUuid = player.getUniqueId().toString();
 
-        if (!worldPdc.has(hostsKey)) {
+        if (!worldPdc.has(plugin.HOSTS_KEY)) {
             Msg.send(player, "&4You are not currently hosting a werewolf game!");
             return true;
         }
 
         Map<String, Set<String>> hostPlayerMap;
-        hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
+        hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
 
         if (!hostPlayerMap.containsKey(playerUuid)) {
             Msg.send(player, "&4You are not currently hosting a werewolf game!");
@@ -42,15 +40,11 @@ public class CancelGame extends CommandBase {
         }
 
         var players = hostPlayerMap.get(playerUuid);
-        Msg.broadcast(players, "&c" + player.getName() + " has cancelled their game of werewolf!");
+        Msg.broadcast(players, "&c" + player.getName() + " has cancelled their game of werewolf!", true);
 
         hostPlayerMap.remove(playerUuid);
 
-        var pdc = player.getPersistentDataContainer();
-        pdc.remove(inGameKey);
-        pdc.remove(roleKey);
-
-        worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
+        worldPdc.set(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&cYou have cancelled your game of werewolf!");
         return true;
     }

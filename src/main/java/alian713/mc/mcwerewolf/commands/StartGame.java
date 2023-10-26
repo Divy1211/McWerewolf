@@ -2,11 +2,11 @@ package alian713.mc.mcwerewolf.commands;
 
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
+import alian713.mc.mcwerewolf.Role;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,14 +19,14 @@ public class StartGame extends CommandBase {
 
     private List<String> generateRoles(int numPlayers) {
         int numWolves = numPlayers/8+1;
-        List<String> roles = List.of("seer", "medic");
+        List<String> roles = List.of(Role.SEER, Role.MEDIC);
         return roles;
 
 //        for(int i = 0; i < numWolves; ++i) {
-//            roles.add("werewolf");
+//            roles.add(Role.WEREWOLF);
 //        }
 //        while(roles.size() < numPlayers) {
-//            roles.add("villager");
+//            roles.add(Role.VILLAGER);
 //        }
 //
 //        Collections.shuffle(roles);
@@ -38,13 +38,11 @@ public class StartGame extends CommandBase {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
-        var hostsKey = new NamespacedKey(plugin, "hosts");
-        var roleKey = new NamespacedKey(plugin, "role");
         var playerUuid = player.getUniqueId().toString();
 
         Map<String, Set<String>> hostPlayerMap = new HashMap<>();
-        if (worldPdc.has(hostsKey)) {
-            hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
+        if (worldPdc.has(plugin.HOSTS_KEY)) {
+            hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
         }
 
         if(!hostPlayerMap.containsKey(playerUuid)) {
@@ -59,6 +57,7 @@ public class StartGame extends CommandBase {
 //            return true;
 //        }
 
+        player.getPersistentDataContainer().set(plugin.DAY_KEY, DataType.BOOLEAN, true);
         List<String> roles = generateRoles(players.size());
 
         int i = 0;
@@ -67,9 +66,10 @@ public class StartGame extends CommandBase {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 
             Msg.send(p, "&aThe game of werewolf has started!");
-            p.getPersistentDataContainer().set(roleKey, DataType.STRING, role);
+            p.getPersistentDataContainer().set(plugin.ROLE_KEY, DataType.STRING, role);
             Msg.send(p, "&aYour role is: &b"+role);
         }
+        Bukkit.dispatchCommand(player, "night-phase");
         return true;
     }
 }

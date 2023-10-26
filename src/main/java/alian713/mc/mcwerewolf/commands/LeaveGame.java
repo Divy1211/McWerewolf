@@ -2,6 +2,7 @@ package alian713.mc.mcwerewolf.commands;
 
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
+import alian713.mc.mcwerewolf.PlayerListener;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -23,19 +24,16 @@ public class LeaveGame extends CommandBase {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
-        var hostsKey = new NamespacedKey(plugin, "hosts");
-        var inGameKey = new NamespacedKey(plugin, "in_game");
-        var roleKey = new NamespacedKey(plugin, "role");
         var playerUuid = player.getUniqueId().toString();
 
         var pdc = player.getPersistentDataContainer();
 
-        if (!pdc.has(inGameKey)) {
+        if (!pdc.has(plugin.IN_GAME_KEY)) {
             Msg.send(player, "&4You are currently not in a werewolf game!");
             return true;
         }
 
-        var targetUuid = pdc.get(inGameKey, DataType.STRING);
+        var targetUuid = pdc.get(plugin.IN_GAME_KEY, DataType.STRING);
 
         if (playerUuid.equals(targetUuid)) {
             Msg.send(player, "&4You cannot leave your own game. Use /cancel-game if you wish to cancel the game!");
@@ -43,15 +41,15 @@ public class LeaveGame extends CommandBase {
         }
 
         Map<String, Set<String>> hostPlayerMap;
-        hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
+        hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
 
         var players = hostPlayerMap.get(targetUuid);
         players.remove(playerUuid);
         Msg.broadcast(players, "&c" + player.getName() + " has left the game of werewolf!");
 
-        pdc.remove(inGameKey);
-        pdc.remove(roleKey);
-        worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
+        PlayerListener.clearKeys(pdc);
+
+        worldPdc.set(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&cYou have left the game of werewolf!");
         return true;
     }

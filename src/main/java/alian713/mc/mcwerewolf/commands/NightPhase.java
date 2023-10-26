@@ -6,47 +6,50 @@ import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
-public class ListGames extends CommandBase {
-    public ListGames() {
-        super("list-games", false, false);
+public class NightPhase extends CommandBase {
+    public NightPhase() {
+        super("night-phase", false, true);
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender) {
+    public boolean onCommand(@NotNull Player player) {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
-        Map<String, Set<String>> hostPlayerMap = new HashMap<>();
+        var playerUuid = player.getUniqueId().toString();
 
+        Map<String, Set<String>> hostPlayerMap = new HashMap<>();
         if (worldPdc.has(plugin.HOSTS_KEY)) {
             hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
         }
 
-        if (hostPlayerMap.isEmpty()) {
-            Msg.send(sender, "&bNo games of werewolf found, host one using /host-game!");
+        if(!hostPlayerMap.containsKey(playerUuid)) {
+            Msg.send(player, "&4You have not hosted a werewolf game!");
             return true;
         }
 
-        Msg.send(sender, "&bThe following players currently have games:");
-        for (var uuid : hostPlayerMap.keySet()) {
-            Player host = Bukkit.getPlayer(UUID.fromString(uuid));
-            if(host == null) {
-                continue;
-            }
-            var started = host.getPersistentDataContainer().has(plugin.ROLE_KEY);
-            Msg.send(sender, (started ? "&c" : "&a") + host.getName());
+        var pdc = player.getPersistentDataContainer();
+
+        if(!pdc.has(plugin.DAY_KEY)) {
+            Msg.send(player, "&4Your game has not started yet!");
+            return true;
         }
 
+        var day = pdc.get(plugin.DAY_KEY, DataType.BOOLEAN);
+        if(!day) {
+            Msg.send(player, "&4It is already night time!");
+            return true;
+        }
+
+        pdc.set(plugin.DAY_KEY, DataType.BOOLEAN, false);
+        Msg.broadcast(hostPlayerMap.get(playerUuid), "&aIt is now night time! Use your night phase action");
         return true;
     }
 }

@@ -41,6 +41,14 @@ commands:
     description: "Start the game of Werewolf that you are hosting"
     usage: "/start-game"
     permission: werewolf.player
+  night-phase:
+    description: "Start the night phase"
+    usage: "/night-phase"
+    permission: werewolf.player
+  day-phase:
+    description: "Start the day/discussion phase"
+    usage: "/day-phase"
+    permission: werewolf.player
 #
 #  see-player:
 #    description: "See if the specified player is a werewolf [seer; night phase]"

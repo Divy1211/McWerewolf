@@ -22,27 +22,24 @@ public class JoinGame extends CommandBase {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
-        var hostsKey = new NamespacedKey(plugin, "hosts");
-        var inGameKey = new NamespacedKey(plugin, "in_game");
-        var roleKey = new NamespacedKey(plugin, "role");
         var playerUuid = player.getUniqueId().toString();
         var targetUuid = target.getUniqueId().toString();
 
         var pdc = player.getPersistentDataContainer();
 
-        if(pdc.has(inGameKey)) {
+        if(pdc.has(plugin.IN_GAME_KEY)) {
             Msg.send(player, "&4You are already in a werewolf game!");
             return true;
         }
 
-        if(target.getPersistentDataContainer().has(roleKey)) {
+        if(target.getPersistentDataContainer().has(plugin.ROLE_KEY)) {
             Msg.send(player, "&4This game has already started!");
             return true;
         }
 
         Map<String, Set<String>> hostPlayerMap = new HashMap<>();
-        if (worldPdc.has(hostsKey)) {
-            hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
+        if (worldPdc.has(plugin.HOSTS_KEY)) {
+            hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
         }
 
         if (!hostPlayerMap.containsKey(targetUuid)) {
@@ -58,8 +55,8 @@ public class JoinGame extends CommandBase {
         Msg.broadcast(players, "&a" + player.getName() + " has joined the game of werewolf!");
 
         players.add(playerUuid);
-        pdc.set(inGameKey, DataType.STRING, targetUuid);
-        worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
+        pdc.set(plugin.IN_GAME_KEY, DataType.STRING, targetUuid);
+        worldPdc.set(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&aYou have joined " + target.getName() + "'s game of werewolf!");
         return true;
     }

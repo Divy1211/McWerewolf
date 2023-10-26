@@ -10,41 +10,45 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-public class ListPlayers extends CommandBase {
-    public ListPlayers() {
-        super("list-players", true, true);
+public class DayPhase extends CommandBase {
+    public DayPhase() {
+        super("day-phase", false, true);
     }
 
     @Override
-    public boolean onCommand(@NotNull Player player, @NotNull Player target) {
+    public boolean onCommand(@NotNull Player player) {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
-        var targetUuid = target.getUniqueId().toString();
+        var playerUuid = player.getUniqueId().toString();
 
         Map<String, Set<String>> hostPlayerMap = new HashMap<>();
         if (worldPdc.has(plugin.HOSTS_KEY)) {
             hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
         }
 
-        if (!hostPlayerMap.containsKey(targetUuid)) {
-            Msg.send(player, "&4That player is not currently hosting a werewolf game!");
+        if(!hostPlayerMap.containsKey(playerUuid)) {
+            Msg.send(player, "&4You have not hosted a werewolf game!");
             return true;
         }
 
-        Msg.send(player, "&bThe following players are in "+target.getName()+"'s game of werewolf:");
-        for (var uuid : hostPlayerMap.get(targetUuid)) {
-            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-            if(p == null) {
-                continue;
-            }
-            Msg.send(player, p.getName());
+        var pdc = player.getPersistentDataContainer();
+
+        if(!pdc.has(plugin.DAY_KEY)) {
+            Msg.send(player, "&4Your game has not started yet!");
+            return true;
         }
+
+        var day = pdc.get(plugin.DAY_KEY, DataType.BOOLEAN);
+        if(day) {
+            Msg.send(player, "&4It is already day time!");
+            return true;
+        }
+
+        pdc.set(plugin.DAY_KEY, DataType.BOOLEAN, true);
+        Msg.broadcast(hostPlayerMap.get(playerUuid), "&aIt is now day time! Discuss");
         return true;
     }
 }

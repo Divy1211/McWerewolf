@@ -13,10 +13,17 @@ public class Msg {
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
     }
     public static void broadcast(Set<String> Uuids, String msg) {
+        broadcast(Uuids, msg, false);
+    }
+
+    public static void broadcast(Set<String> Uuids, String msg, boolean clearKeys) {
         for(var uuid : Uuids) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
             if(p == null) {
                 continue;
+            }
+            if(clearKeys) {
+                PlayerListener.clearKeys(p.getPersistentDataContainer());
             }
             Msg.send(p, msg);
         }
