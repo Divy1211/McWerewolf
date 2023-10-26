@@ -17,6 +17,10 @@ commands:
     description: "Host a game of Werewolf"
     usage: "/host-game"
     permission: werewolf.player
+  kick-player:
+    description: "Kick a certain player from your game of werewolf"
+    usage: "/kick-player"
+    permission: werewolf.player
 #  list-games:
 #    description: "List all open games of Werewolf"
 #    usage: "/list-games"
@@ -33,10 +37,6 @@ commands:
     description: "Cancel the game of Werewolf that you are hosting"
     usage: "/cancel-game"
     permission: werewolf.player
-  cancel-game-other:
-    description: "Cancel the game of Werewolf that someone else is hosting"
-    usage: "/cancel-game-other <Host Player Name>"
-    permission: werewolf.gm
   join-game:
     description: "Join the werewolf game hosted by the specified player"
     usage: "/join-game <Host Player Name>"

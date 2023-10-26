@@ -10,8 +10,10 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class HostGame extends CommandBase {
     public HostGame() {
@@ -22,30 +24,26 @@ public class HostGame extends CommandBase {
     public boolean onCommand(@NotNull Player player) {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
-        NamespacedKey playersKey = new NamespacedKey(plugin, player.getUniqueId().toString());
-        NamespacedKey hostsKey = new NamespacedKey(plugin, "hosts");
+        var worldPdc = overworld.getPersistentDataContainer();
+        var hostsKey = new NamespacedKey(plugin, "hosts");
+        Map<String, Set<String>> hostPlayerMap = new HashMap<>();
+        var playerUuid = player.getUniqueId().toString();
 
-        var pdc = player.getPersistentDataContainer();
 
-        if (pdc.has(playersKey)) {
+        if (worldPdc.has(hostsKey)) {
+            hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
+        }
+
+        if(hostPlayerMap.containsKey(playerUuid)) {
             Msg.send(player, "&4You must finish/cancel the current game to be able to host another");
             return true;
         }
 
-        Player[] hosts = new Player[]{player};
+        Set<String> players = new HashSet<>();
+        players.add(playerUuid);
+        hostPlayerMap.put(playerUuid, players);
 
-        var worldPdc = overworld.getPersistentDataContainer();
-        worldPdc.remove(hostsKey);
-        if (worldPdc.has(hostsKey)) {
-            hosts = worldPdc.get(hostsKey, DataType.PLAYER_ARRAY);
-            var ls = new ArrayList<>(Arrays.asList(hosts));
-            ls.add(player);
-            hosts = ls.toArray(new Player[0]);
-        }
-
-        worldPdc.set(hostsKey, DataType.PLAYER_ARRAY, hosts);
-
-        pdc.set(playersKey, DataType.PLAYER_ARRAY, new Player[]{player});
+        worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&aYou have hosted a new game of werewolf!");
         return true;
     }

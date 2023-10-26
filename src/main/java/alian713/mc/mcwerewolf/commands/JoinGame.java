@@ -3,12 +3,14 @@ package alian713.mc.mcwerewolf.commands;
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
 import com.jeff_media.morepersistentdatatypes.DataType;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class JoinGame extends CommandBase {
     public JoinGame() {
@@ -18,28 +20,34 @@ public class JoinGame extends CommandBase {
     @Override
     public boolean onCommand(@NotNull Player player, @NotNull Player target) {
         var plugin = McWerewolf.getInstance();
-        NamespacedKey playersKey = new NamespacedKey(plugin, target.getUniqueId().toString());
-        NamespacedKey inGameKey = new NamespacedKey(plugin, "in_game");
+        var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
+        var worldPdc = overworld.getPersistentDataContainer();
+        var hostsKey = new NamespacedKey(plugin, "hosts");
+        var playerUuid = player.getUniqueId().toString();
+        var targetUuid = target.getUniqueId().toString();
 
-        var pdc = target.getPersistentDataContainer();
-
-        if (!pdc.has(playersKey)) {
+        if (!worldPdc.has(hostsKey)) {
             Msg.send(player, "&4That player is not currently hosting a werewolf game!");
             return true;
         }
 
-        List<Player> players = Arrays.asList(pdc.get(playersKey, DataType.PLAYER_ARRAY));
-        if (players.contains(player)) {
+        Map<String, Set<String>> hostPlayerMap;
+        hostPlayerMap = worldPdc.get(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
+
+        if (!hostPlayerMap.containsKey(targetUuid)) {
+            Msg.send(player, "&4That player is not currently hosting a werewolf game!");
+            return true;
+        }
+
+        var players = hostPlayerMap.get(targetUuid);
+        if(players.contains(playerUuid)) {
             Msg.send(player, "&4You are already in " + target.getName() + "'s game of werewolf!");
             return true;
         }
-        players.add(player);
-        pdc.set(playersKey, DataType.PLAYER_ARRAY, players.toArray(new Player[0]));
+        players.add(playerUuid);
+
+        worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&aYou have joined " + target.getName() + "'s game of werewolf!");
-
-        pdc = player.getPersistentDataContainer();
-        pdc.set(inGameKey, DataType.PLAYER, target);
-
         return true;
     }
 }
