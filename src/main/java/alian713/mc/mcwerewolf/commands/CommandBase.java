@@ -34,7 +34,7 @@ public abstract class CommandBase implements CommandExecutor {
         Player player = null;
         if (playerOnly) {
             if (!(sender instanceof Player p)) {
-                Msg.send(sender, "&cOnly a player can run this command");
+                Msg.send(sender, "&4Only a player can run this command");
                 return true;
             }
             player = p;
@@ -46,19 +46,19 @@ public abstract class CommandBase implements CommandExecutor {
 
         switch (args.length) {
             case 0: {
-                Msg.send(sender, "&cPlease specify a player to target");
+                Msg.send(sender, "&4Please specify a player to target");
                 return true;
             }
             case 1: {
                 var target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
-                    Msg.send(sender, "&cPlayer not found");
+                    Msg.send(sender, "&4Player not found");
                     return true;
                 }
                 return playerOnly ? onCommand(player, target) : onCommand(sender, target);
             }
             default: {
-                Msg.send(sender, "&cIncorrect command usage");
+                Msg.send(sender, "&4Incorrect command usage");
                 Bukkit.dispatchCommand(sender, "help " + label);
                 return true;
             }

@@ -1,5 +1,7 @@
 package alian713.mc.mcwerewolf;
 
+import alian713.mc.mcwerewolf.commands.CancelGame;
+import alian713.mc.mcwerewolf.commands.CancelGameOther;
 import alian713.mc.mcwerewolf.commands.HostGame;
 import alian713.mc.mcwerewolf.commands.JoinGame;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +21,8 @@ public final class McWerewolf extends JavaPlugin {
 
         new HostGame();
         new JoinGame();
+        new CancelGame();
+        new CancelGameOther();
         // getCommand("list-games").setExecutor(new ListGames());
         // getCommand("list-players").setExecutor(new ListPlayers());
         // getCommand("start-game").setExecutor(new StartGame());
