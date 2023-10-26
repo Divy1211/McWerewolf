@@ -55,7 +55,6 @@ public class DayPhase extends CommandBase {
         worldPdc.set(plugin.DAY_KEY, DataType.asMap(DataType.STRING, DataType.BOOLEAN), phaseMap);
 
         var players = hostPlayerMap.get(playerUuid);
-        Msg.broadcast(players, "&aIt is now day time! Discuss");
 
         int numWolves = 0;
         int numAlive = 0;
@@ -85,6 +84,8 @@ public class DayPhase extends CommandBase {
         if(numWolves == numAlive) {
             Msg.broadcast(players, "&cThe werewolves have won the game!");
             CancelGame.onCancel(player, true);
+        } else {
+            Msg.broadcast(players, "&aIt is now day time! Discuss");
         }
         return true;
     }

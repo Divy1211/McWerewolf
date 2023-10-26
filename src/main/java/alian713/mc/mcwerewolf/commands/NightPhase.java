@@ -60,7 +60,6 @@ public class NightPhase extends CommandBase {
 
         var players = hostPlayerMap.get(playerUuid);
 
-        Msg.broadcast(players, "&aIt is now night time! Use your night phase action");
 
         int numWolves = 0;
         for(var uuid : players) {
@@ -80,6 +79,8 @@ public class NightPhase extends CommandBase {
         if(numWolves == 0) {
             Msg.broadcast(players, "&aThe villagers have won the game!");
             CancelGame.onCancel(player, true);
+        } else {
+            Msg.broadcast(players, "&aIt is now night time! Use your night phase action");
         }
         return true;
     }
