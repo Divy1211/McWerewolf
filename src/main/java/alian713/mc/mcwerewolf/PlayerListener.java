@@ -41,6 +41,7 @@ public class PlayerListener implements Listener {
         pdc.remove(plugin.ROLE_KEY);
         pdc.remove(plugin.DAY_KEY);
         pdc.remove(plugin.ALIVE_KEY);
+        pdc.remove(plugin.USED_ACTION_KEY);
     }
 
     @EventHandler

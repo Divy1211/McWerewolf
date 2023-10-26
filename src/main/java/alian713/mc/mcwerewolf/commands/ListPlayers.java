@@ -6,7 +6,7 @@ import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,11 +17,11 @@ import java.util.UUID;
 
 public class ListPlayers extends CommandBase {
     public ListPlayers() {
-        super("list-players", true, true);
+        super("list-players", true, false);
     }
 
     @Override
-    public boolean onCommand(@NotNull Player player, @NotNull Player target) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Player target) {
         var plugin = McWerewolf.getInstance();
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
@@ -33,17 +33,17 @@ public class ListPlayers extends CommandBase {
         }
 
         if (!hostPlayerMap.containsKey(targetUuid)) {
-            Msg.send(player, "&4That player is not currently hosting a werewolf game!");
+            Msg.send(sender, "&4That player is not currently hosting a werewolf game!");
             return true;
         }
 
-        Msg.send(player, "&bThe following players are in "+target.getName()+"'s game of werewolf:");
+        Msg.send(sender, "&bThe following players are in " + target.getName() + "'s game of werewolf:");
         for (var uuid : hostPlayerMap.get(targetUuid)) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-            if(p == null) {
+            if (p == null) {
                 continue;
             }
-            Msg.send(player, p.getName());
+            Msg.send(sender, p.getName());
         }
         return true;
     }

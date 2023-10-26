@@ -49,22 +49,22 @@ commands:
     description: "Start the day/discussion phase"
     usage: "/day-phase"
     permission: werewolf.player
-#
-#  see-player:
-#    description: "See if the specified player is a werewolf [seer; night phase]"
-#    usage: "/see-player <Host Player Name>"
-#    permission: werewolf.player
+
+  see-player:
+    description: "See if the specified player is a werewolf [seer; night phase]"
+    usage: "/see-player <Player Name>"
+    permission: werewolf.player
 #  eat-player:
 #    description: "Eat the specified player [chosen; werewolf; night phase]"
-#    usage: "/eat-player <Host Player Name>"
+#    usage: "/eat-player <Player Name>"
 #    permission: werewolf.player
 #  save-player:
 #    description: "Save the specified player from being killed [medic; night phase]"
-#    usage: "/save-player <Host Player Name>"
+#    usage: "/save-player <Player Name>"
 #    permission: werewolf.player
 #  nom-player:
 #    description: "Nominate the specified player for being executed"
-#    usage: "/nom-player <Host Player Name>"
+#    usage: "/nom-player <Player Name>"
 #    permission: werewolf.player
 #  exec:
 #    description: "Vote to execute the player currently on the chopping block"

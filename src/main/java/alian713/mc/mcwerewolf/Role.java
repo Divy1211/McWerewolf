@@ -1,8 +1,8 @@
 package alian713.mc.mcwerewolf;
 
 public class Role {
-    public static final String SEER = "SEER";
-    public static final String MEDIC = "MEDIC";
-    public static final String WEREWOLF = "WEREWOLF";
-    public static final String VILLAGER = "VILLAGER";
+    public static final String SEER = "Seer";
+    public static final String MEDIC = "Medic";
+    public static final String WEREWOLF = "Werewolf";
+    public static final String VILLAGER = "Villager";
 }

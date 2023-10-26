@@ -57,7 +57,14 @@ public class StartGame extends CommandBase {
 //            return true;
 //        }
 
-        player.getPersistentDataContainer().set(plugin.DAY_KEY, DataType.BOOLEAN, true);
+        Map<String, Boolean> phaseMap = new HashMap<>();
+        if (worldPdc.has(plugin.DAY_KEY)) {
+            phaseMap = worldPdc.get(plugin.DAY_KEY, DataType.asMap(DataType.STRING, DataType.BOOLEAN));
+        }
+        phaseMap.put(playerUuid, true);
+        worldPdc.set(plugin.DAY_KEY, DataType.asMap(DataType.STRING, DataType.BOOLEAN), phaseMap);
+
+
         List<String> roles = generateRoles(players.size());
 
         int i = 0;

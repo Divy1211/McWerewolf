@@ -11,10 +11,13 @@ public final class McWerewolf extends JavaPlugin {
     private static McWerewolf instance;
 
     public final NamespacedKey HOSTS_KEY = new NamespacedKey(this, "hosts");
+    public final NamespacedKey DAY_KEY = new NamespacedKey(this, "day");
+
     public final NamespacedKey IN_GAME_KEY = new NamespacedKey(this, "in_game");
     public final NamespacedKey ROLE_KEY = new NamespacedKey(this, "role");
-    public final NamespacedKey DAY_KEY = new NamespacedKey(this, "day");
     public final NamespacedKey ALIVE_KEY = new NamespacedKey(this, "alive");
+    public final NamespacedKey USED_ACTION_KEY = new NamespacedKey(this, "used_action");
+    public final NamespacedKey IS_SAFE = new NamespacedKey(this, "is_safe");
 
     public static McWerewolf getInstance() {
         return instance;
@@ -44,6 +47,7 @@ public final class McWerewolf extends JavaPlugin {
         new StartGame();
         new DayPhase();
         new NightPhase();
+        new SeePlayer();
     }
 
     @Override

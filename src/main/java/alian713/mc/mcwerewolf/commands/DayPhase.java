@@ -35,19 +35,24 @@ public class DayPhase extends CommandBase {
         }
 
         var pdc = player.getPersistentDataContainer();
-
-        if(!pdc.has(plugin.DAY_KEY)) {
-            Msg.send(player, "&4Your game has not started yet!");
+        if(!pdc.has(plugin.ROLE_KEY)) {
+            Msg.send(player, "&4You are not in an active werewolf game!");
             return true;
         }
 
-        var day = pdc.get(plugin.DAY_KEY, DataType.BOOLEAN);
+        Map<String, Boolean> phaseMap = new HashMap<>();
+        if (worldPdc.has(plugin.DAY_KEY)) {
+            phaseMap = worldPdc.get(plugin.DAY_KEY, DataType.asMap(DataType.STRING, DataType.BOOLEAN));
+        }
+
+        var day = phaseMap.get(playerUuid);
         if(day) {
             Msg.send(player, "&4It is already day time!");
             return true;
         }
 
-        pdc.set(plugin.DAY_KEY, DataType.BOOLEAN, true);
+        phaseMap.put(playerUuid, true);
+        worldPdc.set(plugin.DAY_KEY, DataType.asMap(DataType.STRING, DataType.BOOLEAN), phaseMap);
         Msg.broadcast(hostPlayerMap.get(playerUuid), "&aIt is now day time! Discuss");
         return true;
     }
