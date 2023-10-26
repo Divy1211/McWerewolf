@@ -47,10 +47,8 @@ public class LeaveGame extends CommandBase {
 
         var players = hostPlayerMap.get(targetUuid);
         players.remove(playerUuid);
-        for (String uuid : players) {
-            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-            Msg.send(p, "&c" + player.getName() + " has left the game of werewolf!");
-        }
+        Msg.broadcast(players, "&c" + player.getName() + " has left the game of werewolf!");
+
         pdc.remove(inGameKey);
         pdc.remove(roleKey);
         worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);

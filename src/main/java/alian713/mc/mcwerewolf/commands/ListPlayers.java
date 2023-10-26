@@ -39,8 +39,12 @@ public class ListPlayers extends CommandBase {
         }
 
         Msg.send(player, "&bThe following players are in "+target.getName()+"'s game of werewolf:");
-        for (var p : hostPlayerMap.get(targetUuid)) {
-            Msg.send(player, "&3" + Bukkit.getPlayer(UUID.fromString(p)).getName());
+        for (var uuid : hostPlayerMap.get(targetUuid)) {
+            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+            if(p == null) {
+                continue;
+            }
+            Msg.send(player, p.getName());
         }
         return true;
     }

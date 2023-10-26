@@ -47,6 +47,7 @@ public class PlayerListener implements Listener {
         var pdc = player.getPersistentDataContainer();
 
         if(!pdc.has(inGameKey)) {
+            pdc.remove(roleKey);
             return;
         }
 

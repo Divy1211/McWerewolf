@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 
 public class CancelGame extends CommandBase {
@@ -26,6 +25,7 @@ public class CancelGame extends CommandBase {
         var worldPdc = overworld.getPersistentDataContainer();
         var hostsKey = new NamespacedKey(plugin, "hosts");
         var inGameKey = new NamespacedKey(plugin, "in_game");
+        var roleKey = new NamespacedKey(plugin, "role");
         var playerUuid = player.getUniqueId().toString();
 
         if (!worldPdc.has(hostsKey)) {
@@ -42,14 +42,13 @@ public class CancelGame extends CommandBase {
         }
 
         var players = hostPlayerMap.get(playerUuid);
-        for(String uuid : players) {
-            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-            p.getPersistentDataContainer().remove(inGameKey);
-            Msg.send(p, "&c" + player.getName() + " has cancelled their game of werewolf!");
-        }
+        Msg.broadcast(players, "&c" + player.getName() + " has cancelled their game of werewolf!");
 
         hostPlayerMap.remove(playerUuid);
-        player.getPersistentDataContainer().remove(inGameKey);
+
+        var pdc = player.getPersistentDataContainer();
+        pdc.remove(inGameKey);
+        pdc.remove(roleKey);
 
         worldPdc.set(hostsKey, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)), hostPlayerMap);
         Msg.send(player, "&cYou have cancelled your game of werewolf!");

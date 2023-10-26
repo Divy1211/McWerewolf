@@ -24,6 +24,7 @@ public class JoinGame extends CommandBase {
         var worldPdc = overworld.getPersistentDataContainer();
         var hostsKey = new NamespacedKey(plugin, "hosts");
         var inGameKey = new NamespacedKey(plugin, "in_game");
+        var roleKey = new NamespacedKey(plugin, "role");
         var playerUuid = player.getUniqueId().toString();
         var targetUuid = target.getUniqueId().toString();
 
@@ -31,6 +32,11 @@ public class JoinGame extends CommandBase {
 
         if(pdc.has(inGameKey)) {
             Msg.send(player, "&4You are already in a werewolf game!");
+            return true;
+        }
+
+        if(target.getPersistentDataContainer().has(roleKey)) {
+            Msg.send(player, "&4This game has already started!");
             return true;
         }
 
@@ -49,10 +55,7 @@ public class JoinGame extends CommandBase {
             Msg.send(player, "&4You are already in " + target.getName() + "'s game of werewolf!");
             return true;
         }
-        for(String uuid : players) {
-            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-            Msg.send(p, "&a" + player.getName() + " has joined the game of werewolf!");
-        }
+        Msg.broadcast(players, "&a" + player.getName() + " has joined the game of werewolf!");
 
         players.add(playerUuid);
         pdc.set(inGameKey, DataType.STRING, targetUuid);

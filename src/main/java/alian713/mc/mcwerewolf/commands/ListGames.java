@@ -27,6 +27,7 @@ public class ListGames extends CommandBase {
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
         var hostsKey = new NamespacedKey(plugin, "hosts");
+        var roleKey = new NamespacedKey(plugin, "role");
         Map<String, Set<String>> hostPlayerMap = new HashMap<>();
 
         if (worldPdc.has(hostsKey)) {
@@ -38,9 +39,14 @@ public class ListGames extends CommandBase {
             return true;
         }
 
-        Msg.send(sender, "&bThe following players currently have open games:");
-        for (var host : hostPlayerMap.keySet()) {
-            Msg.send(sender, "&3" + Bukkit.getPlayer(UUID.fromString(host)).getName());
+        Msg.send(sender, "&bThe following players currently have games:");
+        for (var uuid : hostPlayerMap.keySet()) {
+            Player host = Bukkit.getPlayer(UUID.fromString(uuid));
+            if(host == null) {
+                continue;
+            }
+            var started = host.getPersistentDataContainer().has(roleKey);
+            Msg.send(sender, (started ? "&c" : "&a") + host.getName());
         }
 
         return true;
