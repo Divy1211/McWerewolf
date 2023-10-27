@@ -70,6 +70,7 @@ public class DayPhase extends CommandBase {
             if(!isSafe && isEaten) {
                 Msg.broadcast(players, "&c"+p.getName()+" has been eaten!");
                 playerPdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, false);
+                playerPdc.set(plugin.IS_EATEN_KEY, DataType.BOOLEAN, false);
             }
             if(playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
                 if(playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
