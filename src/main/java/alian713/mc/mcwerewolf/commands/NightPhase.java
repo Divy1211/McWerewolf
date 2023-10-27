@@ -93,10 +93,9 @@ public class NightPhase extends CommandBase {
 
             playerPdc.set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, false);
             if (playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+                ++numAlive;
                 if (playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
                     ++numWolves;
-                } else {
-                    ++numAlive;
                 }
             }
         }
