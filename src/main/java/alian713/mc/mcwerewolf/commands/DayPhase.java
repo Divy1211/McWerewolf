@@ -10,7 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class DayPhase extends CommandBase {
     public DayPhase() {
@@ -29,13 +32,13 @@ public class DayPhase extends CommandBase {
             hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
         }
 
-        if(!hostPlayerMap.containsKey(playerUuid)) {
+        if (!hostPlayerMap.containsKey(playerUuid)) {
             Msg.send(player, "&4You have not hosted a werewolf game!");
             return true;
         }
 
         var pdc = player.getPersistentDataContainer();
-        if(!pdc.has(plugin.ROLE_KEY)) {
+        if (!pdc.has(plugin.ROLE_KEY)) {
             Msg.send(player, "&4You are not in an active werewolf game!");
             return true;
         }
@@ -46,7 +49,7 @@ public class DayPhase extends CommandBase {
         }
 
         var day = phaseMap.get(playerUuid);
-        if(day) {
+        if (day) {
             Msg.send(player, "&4It is already day time!");
             return true;
         }
@@ -58,22 +61,24 @@ public class DayPhase extends CommandBase {
 
         int numWolves = 0;
         int numAlive = 0;
-        for(var uuid : players) {
+        for (var uuid : players) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-            if(p == null) {
+            if (p == null) {
                 continue;
             }
             var playerPdc = p.getPersistentDataContainer();
             var isEaten = playerPdc.get(plugin.IS_EATEN_KEY, DataType.BOOLEAN);
             var isSafe = playerPdc.get(plugin.IS_SAFE_KEY, DataType.BOOLEAN);
 
-            if(!isSafe && isEaten) {
-                Msg.broadcast(players, "&c"+p.getName()+" has been eaten!");
+            if (!isSafe && isEaten) {
+                var role = playerPdc.get(plugin.ROLE_KEY, DataType.STRING);
+                Msg.broadcast(players, "&c" + p.getName() + " has been eaten! They were &b" + role);
+
                 playerPdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, false);
                 playerPdc.set(plugin.IS_EATEN_KEY, DataType.BOOLEAN, false);
             }
-            if(playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
-                if(playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
+            if (playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+                if (playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
                     ++numWolves;
                 } else {
                     ++numAlive;
@@ -84,11 +89,15 @@ public class DayPhase extends CommandBase {
             pdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, 0);
         }
 
-        if(numWolves == numAlive) {
+        if (numWolves == numAlive) {
             Msg.broadcast(players, "&cThe werewolves have won the game!");
+            Msg.broadcast(players, "&cRoles:");
+            NightPhase.showRoles(players);
             CancelGame.onCancel(player, true);
-        } else if(numWolves == 0) {
+        } else if (numWolves == 0) {
             Msg.broadcast(players, "&aThe villagers have won the game!");
+            Msg.broadcast(players, "&aRoles:");
+            NightPhase.showRoles(players);
             CancelGame.onCancel(player, true);
         } else {
             Msg.broadcast(players, "&aIt is now day time! Discuss");

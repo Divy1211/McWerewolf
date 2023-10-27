@@ -20,6 +20,19 @@ public class NightPhase extends CommandBase {
         super("night-phase", false, true);
     }
 
+    public static void showRoles(Set<String> players) {
+        var plugin = McWerewolf.getInstance();
+        for (var uuid : players) {
+            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
+            if (p == null) {
+                continue;
+            }
+            var playerPdc = p.getPersistentDataContainer();
+            var role = playerPdc.get(plugin.ROLE_KEY, DataType.STRING);
+            Msg.broadcast(players, p.getName() + " &b" + role);
+        }
+    }
+
     @Override
     public boolean onCommand(@NotNull Player player) {
         var plugin = McWerewolf.getInstance();
@@ -88,10 +101,14 @@ public class NightPhase extends CommandBase {
             }
         }
 
-        if (maxPlayer != null && maxVotes > numAlive/2) {
-            Msg.broadcast(players, "&c"+maxPlayer.getName()+" has been lynched!");
+        if (maxPlayer != null && maxVotes > numAlive / 2) {
+            var playerPdc = maxPlayer.getPersistentDataContainer();
+            var role = playerPdc.get(plugin.ROLE_KEY, DataType.STRING);
+            Msg.broadcast(players, "&c" + maxPlayer.getName() + " has been lynched! They were: &b" + role);
 
-            var role = maxPlayer.getPersistentDataContainer().get(plugin.ROLE_KEY, DataType.STRING);
+            playerPdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, 0);
+            playerPdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, false);
+
             if (role.equals(Role.WEREWOLF)) {
                 --numWolves;
             } else {
@@ -101,9 +118,13 @@ public class NightPhase extends CommandBase {
 
         if (numWolves == numAlive) {
             Msg.broadcast(players, "&cThe werewolves have won the game!");
+            Msg.broadcast(players, "&cRoles:");
+            showRoles(players);
             CancelGame.onCancel(player, true);
         } else if (numWolves == 0) {
             Msg.broadcast(players, "&aThe villagers have won the game!");
+            Msg.broadcast(players, "&aRoles:");
+            showRoles(players);
             CancelGame.onCancel(player, true);
         } else {
             Msg.broadcast(players, "&aIt is now night time! Use your night phase action");

@@ -60,6 +60,12 @@ public class Lynch extends CommandBase {
         }
 
         var targetPdc = target.getPersistentDataContainer();
+
+        if(!targetPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+            Msg.send(player, "&4That player is already dead!");
+            return true;
+        }
+
         var votes = targetPdc.get(plugin.NOM_COUNT_KEY, DataType.INTEGER);
         targetPdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, votes + 1);
 
