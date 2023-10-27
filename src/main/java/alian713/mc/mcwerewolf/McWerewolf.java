@@ -12,8 +12,8 @@ public final class McWerewolf extends JavaPlugin {
 
     public final NamespacedKey HOSTS_KEY = new NamespacedKey(this, "hosts");
     public final NamespacedKey DAY_KEY = new NamespacedKey(this, "day");
-    public final NamespacedKey NOM_COUNT_KEY = new NamespacedKey(this, "nom_count_key");
 
+    public final NamespacedKey NOM_COUNT_KEY = new NamespacedKey(this, "nom_count_key");
     public final NamespacedKey IN_GAME_KEY = new NamespacedKey(this, "in_game");
     public final NamespacedKey ROLE_KEY = new NamespacedKey(this, "role");
     public final NamespacedKey IS_EATEN_KEY = new NamespacedKey(this, "eaten");
@@ -27,19 +27,18 @@ public final class McWerewolf extends JavaPlugin {
         return instance;
     }
 
-    private void cleanHostList() {
+    private void cleanData() {
         var overworld = Bukkit.getWorld(((DedicatedServer) MinecraftServer.getServer()).getProperties().levelName);
         var worldPdc = overworld.getPersistentDataContainer();
         worldPdc.remove(HOSTS_KEY);
         worldPdc.remove(DAY_KEY);
-        worldPdc.remove(NOM_COUNT_KEY);
     }
 
     @Override
     public void onEnable() {
         instance = this;
 
-        cleanHostList();
+        cleanData();
 
         getLogger().info("Enabled McWerewolf!");
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
