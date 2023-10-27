@@ -78,10 +78,9 @@ public class DayPhase extends CommandBase {
             }
             playerPdc.set(plugin.IS_EATEN_KEY, DataType.BOOLEAN, false);
             if (playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+                ++numAlive;
                 if (playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
                     ++numWolves;
-                } else {
-                    ++numAlive;
                 }
             }
             playerPdc.set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, false);
