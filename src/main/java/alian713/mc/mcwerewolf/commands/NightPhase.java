@@ -104,7 +104,7 @@ public class NightPhase extends CommandBase {
         if (maxPlayer != null && maxVotes > numAlive / 2) {
             var playerPdc = maxPlayer.getPersistentDataContainer();
             var role = playerPdc.get(plugin.ROLE_KEY, DataType.STRING);
-            Msg.broadcast(players, "&c" + maxPlayer.getName() + " has been lynched! They were: &b" + role);
+            Msg.broadcast(players, "&c" + maxPlayer.getName() + " has been lynched! They were the &b" + role);
 
             playerPdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, 0);
             playerPdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, false);
