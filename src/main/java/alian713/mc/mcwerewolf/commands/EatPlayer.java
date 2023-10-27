@@ -33,6 +33,11 @@ public class EatPlayer extends CommandBase {
             return true;
         }
 
+        if(!pdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+            Msg.send(player, "&4Dead players cannot use night time actions!");
+            return true;
+        }
+
         var role = pdc.get(plugin.ROLE_KEY, DataType.STRING);
         if (!role.equals(Role.WEREWOLF)) {
             Msg.send(player, "&4You are not a werewolf!");

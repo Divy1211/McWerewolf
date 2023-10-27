@@ -43,6 +43,8 @@ public class PlayerListener implements Listener {
         pdc.remove(plugin.USED_ACTION_KEY);
         pdc.remove(plugin.IS_SAFE_KEY);
         pdc.remove(plugin.IS_EATEN_KEY);
+        pdc.remove(plugin.IS_NOM_KEY);
+        pdc.remove(plugin.HAS_VOTED);
     }
 
     @EventHandler

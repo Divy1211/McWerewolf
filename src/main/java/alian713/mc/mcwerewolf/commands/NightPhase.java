@@ -2,7 +2,6 @@ package alian713.mc.mcwerewolf.commands;
 
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
-import alian713.mc.mcwerewolf.PlayerListener;
 import alian713.mc.mcwerewolf.Role;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
@@ -33,13 +32,13 @@ public class NightPhase extends CommandBase {
             hostPlayerMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
         }
 
-        if(!hostPlayerMap.containsKey(playerUuid)) {
+        if (!hostPlayerMap.containsKey(playerUuid)) {
             Msg.send(player, "&4You have not hosted a werewolf game!");
             return true;
         }
 
         var pdc = player.getPersistentDataContainer();
-        if(!pdc.has(plugin.ROLE_KEY)) {
+        if (!pdc.has(plugin.ROLE_KEY)) {
             Msg.send(player, "&4You are not in an active werewolf game!");
             return true;
         }
@@ -50,7 +49,7 @@ public class NightPhase extends CommandBase {
         }
 
         var day = phaseMap.get(playerUuid);
-        if(!day) {
+        if (!day) {
             Msg.send(player, "&4It is already night time!");
             return true;
         }
@@ -62,15 +61,26 @@ public class NightPhase extends CommandBase {
 
         int numAlive = 0;
         int numWolves = 0;
-        for(var uuid : players) {
+
+        Player maxPlayer = null;
+        int maxVotes = 0;
+
+        for (var uuid : players) {
             Player p = Bukkit.getPlayer(UUID.fromString(uuid));
-            if(p == null) {
+            if (p == null) {
                 continue;
             }
             var playerPdc = p.getPersistentDataContainer();
+
+            var votes = playerPdc.get(plugin.NOM_COUNT_KEY, DataType.INTEGER);
+            if (votes > maxVotes) {
+                maxPlayer = p;
+                maxVotes = votes;
+            }
+
             playerPdc.set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, false);
-            if(playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
-                if(playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
+            if (playerPdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+                if (playerPdc.get(plugin.ROLE_KEY, DataType.STRING).equals(Role.WEREWOLF)) {
                     ++numWolves;
                 } else {
                     ++numAlive;
@@ -78,10 +88,21 @@ public class NightPhase extends CommandBase {
             }
         }
 
-        if(numWolves == numAlive) {
+        if (maxPlayer != null && maxVotes > numAlive/2) {
+            Msg.broadcast(players, "&c"+maxPlayer.getName()+" has been lynched!");
+
+            var role = maxPlayer.getPersistentDataContainer().get(plugin.ROLE_KEY, DataType.STRING);
+            if (role.equals(Role.WEREWOLF)) {
+                --numWolves;
+            } else {
+                --numAlive;
+            }
+        }
+
+        if (numWolves == numAlive) {
             Msg.broadcast(players, "&cThe werewolves have won the game!");
             CancelGame.onCancel(player, true);
-        } else if(numWolves == 0) {
+        } else if (numWolves == 0) {
             Msg.broadcast(players, "&aThe villagers have won the game!");
             CancelGame.onCancel(player, true);
         } else {

@@ -19,18 +19,17 @@ public class StartGame extends CommandBase {
 
     private List<String> generateRoles(int numPlayers) {
         int numWolves = numPlayers/8+1;
-        List<String> roles = List.of(Role.WEREWOLF, Role.MEDIC);
-        return roles;
+        List<String> roles = new ArrayList<>(List.of(Role.MEDIC, Role.SEER));
 
-//        for(int i = 0; i < numWolves; ++i) {
-//            roles.add(Role.WEREWOLF);
-//        }
-//        while(roles.size() < numPlayers) {
-//            roles.add(Role.VILLAGER);
-//        }
-//
-//        Collections.shuffle(roles);
-//        return roles;
+        for(int i = 0; i < numWolves; ++i) {
+            roles.add(Role.WEREWOLF);
+        }
+        while(roles.size() < numPlayers) {
+            roles.add(Role.VILLAGER);
+        }
+
+        Collections.shuffle(roles);
+        return roles;
     }
 
     @Override
@@ -77,10 +76,14 @@ public class StartGame extends CommandBase {
             pdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, true);
             pdc.set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, false);
             pdc.set(plugin.IS_EATEN_KEY, DataType.BOOLEAN, false);
+            pdc.set(plugin.IS_NOM_KEY, DataType.BOOLEAN, false);
+            pdc.set(plugin.HAS_VOTED, DataType.BOOLEAN, false);
+            pdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, 0);
 
             Msg.send(p, "&aThe game of werewolf has started!");
             Msg.send(p, "&aYour role is: &b"+role);
         }
+
         Bukkit.dispatchCommand(player, "night-phase");
         return true;
     }

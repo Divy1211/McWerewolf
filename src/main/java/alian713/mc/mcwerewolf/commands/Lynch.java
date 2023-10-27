@@ -2,7 +2,6 @@ package alian713.mc.mcwerewolf.commands;
 
 import alian713.mc.mcwerewolf.McWerewolf;
 import alian713.mc.mcwerewolf.Msg;
-import alian713.mc.mcwerewolf.Role;
 import com.jeff_media.morepersistentdatatypes.DataType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -13,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SavePlayer extends CommandBase {
-    public SavePlayer() {
-        super("save-player", true, true);
+public class Lynch extends CommandBase {
+    public Lynch() {
+        super("lynch", true, true);
     }
 
     @Override
@@ -28,24 +27,18 @@ public class SavePlayer extends CommandBase {
 
         var pdc = player.getPersistentDataContainer();
 
-        if(!pdc.has(plugin.ROLE_KEY)) {
+        if (!pdc.has(plugin.ROLE_KEY)) {
             Msg.send(player, "&4You are not in an active werewolf game!");
             return true;
         }
 
-        if(!pdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
-            Msg.send(player, "&4Dead players cannot use night time actions!");
+        if (!pdc.get(plugin.IS_ALIVE_KEY, DataType.BOOLEAN)) {
+            Msg.send(player, "&4Dead players cannot vote to lynch!");
             return true;
         }
 
-        var role = pdc.get(plugin.ROLE_KEY, DataType.STRING);
-        if(!role.equals(Role.MEDIC)) {
-            Msg.send(player, "&4You are not the Medic!");
-            return true;
-        }
-
-        if(playerUuid.equals(targetUuid)) {
-            Msg.send(player, "&4You cannot save yourself!");
+        if (playerUuid.equals(targetUuid)) {
+            Msg.send(player, "&4Why in gods name are you voting to lynch yourself?");
             return true;
         }
 
@@ -56,27 +49,22 @@ public class SavePlayer extends CommandBase {
 
         var hostUuid = pdc.get(plugin.IN_GAME_KEY, DataType.STRING);
         var day = phaseMap.get(hostUuid);
-        if(day) {
-            Msg.send(player, "&4You cannot use your action during the day!");
+        if (!day) {
+            Msg.send(player, "&4You cannot lynch people during the night!");
             return true;
         }
 
-        var usedAction = pdc.get(plugin.USED_ACTION_KEY, DataType.BOOLEAN);
-        if(usedAction) {
-            Msg.send(player, "&4You have already used your action for this night!");
+        if (pdc.get(plugin.HAS_VOTED, DataType.BOOLEAN)) {
+            Msg.send(player, "&4You can only vote to lynch one person per day!");
             return true;
         }
 
-        var hostMap = worldPdc.get(plugin.HOSTS_KEY, DataType.asMap(DataType.STRING, DataType.asSet(DataType.STRING)));
-        if(!hostMap.get(hostUuid).contains(targetUuid)) {
-            Msg.send(player, "&4That player is not in your werewolf game!");
-            return true;
-        }
+        var targetPdc = target.getPersistentDataContainer();
+        var votes = targetPdc.get(plugin.NOM_COUNT_KEY, DataType.INTEGER);
+        targetPdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, votes + 1);
 
-        target.getPersistentDataContainer().set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, true);
-        pdc.set(plugin.USED_ACTION_KEY, DataType.BOOLEAN, true);
-
-        Msg.send(player, "&aThat player is now safe from the werewolves for this night!");
+        pdc.set(plugin.HAS_VOTED, DataType.BOOLEAN, true);
+        Msg.send(player, "&cYou've voted to lynch " + target.getName() + "!");
         return true;
     }
 }

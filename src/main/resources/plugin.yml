@@ -62,15 +62,15 @@ commands:
     description: "Save the specified player from being killed [medic; night phase]"
     usage: "/save-player <Player Name>"
     permission: werewolf.player
-#  nom-player:
-#    description: "Nominate the specified player for being executed"
-#    usage: "/nom-player <Player Name>"
-#    permission: werewolf.player
-#  exec:
-#    description: "Vote to execute the player currently on the chopping block"
-#    usage: "/exec"
-#    permission: werewolf.player
-#  no-exec:
-#    description: "Vote to NOT execute the player currently on the chopping block"
-#    usage: "/no-exec"
-#    permission: werewolf.player
+  nom-player:
+    description: "Nominate the specified player for being lynching"
+    usage: "/nom-player <Player Name>"
+    permission: werewolf.player
+  run-noms:
+    description: "Go through the voting phase for everyone that has been nominated for lynching"
+    usage: "/run-noms"
+    permission: werewolf.player
+  lynch:
+    description: "Vote to lynch the player currently on the chopping block"
+    usage: "/lynch"
+    permission: werewolf.player

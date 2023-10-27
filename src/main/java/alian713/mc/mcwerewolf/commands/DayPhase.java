@@ -79,10 +79,15 @@ public class DayPhase extends CommandBase {
                 }
             }
             playerPdc.set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, false);
+            playerPdc.set(plugin.HAS_VOTED, DataType.BOOLEAN, false);
+            pdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, 0);
         }
 
         if(numWolves == numAlive) {
             Msg.broadcast(players, "&cThe werewolves have won the game!");
+            CancelGame.onCancel(player, true);
+        } else if(numWolves == 0) {
+            Msg.broadcast(players, "&aThe villagers have won the game!");
             CancelGame.onCancel(player, true);
         } else {
             Msg.broadcast(players, "&aIt is now day time! Discuss");
