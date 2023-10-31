@@ -88,7 +88,7 @@ public class DayPhase extends CommandBase {
             pdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, 0);
         }
 
-        if (numWolves == numAlive) {
+        if (numWolves >= (numAlive - numWolves)) {
             Msg.broadcast(players, "&cThe werewolves have won the game!");
             Msg.broadcast(players, "&cRoles:");
             NightPhase.showRoles(players);

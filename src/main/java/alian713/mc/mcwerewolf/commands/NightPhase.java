@@ -114,7 +114,7 @@ public class NightPhase extends CommandBase {
             }
         }
 
-        if (numWolves == numAlive) {
+        if (numWolves >= (numAlive - numWolves)) {
             Msg.broadcast(players, "&cThe werewolves have won the game!");
             Msg.broadcast(players, "&cRoles:");
             showRoles(players);
