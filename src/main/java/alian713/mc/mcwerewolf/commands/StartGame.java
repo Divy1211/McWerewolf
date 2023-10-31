@@ -76,9 +76,8 @@ public class StartGame extends CommandBase {
             pdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, true);
             pdc.set(plugin.IS_SAFE_KEY, DataType.BOOLEAN, false);
             pdc.set(plugin.IS_EATEN_KEY, DataType.BOOLEAN, false);
-            pdc.set(plugin.IS_NOM_KEY, DataType.BOOLEAN, false);
             pdc.set(plugin.HAS_VOTED, DataType.BOOLEAN, false);
-            pdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, 0);
+            pdc.set(plugin.VOTE_COUNT_KEY, DataType.INTEGER, 0);
 
             Msg.send(p, "&aThe game of werewolf has started!");
             Msg.send(p, "&aYour role is: &b"+role);

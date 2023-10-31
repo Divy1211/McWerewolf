@@ -85,7 +85,7 @@ public class NightPhase extends CommandBase {
             }
             var playerPdc = p.getPersistentDataContainer();
 
-            var votes = playerPdc.get(plugin.NOM_COUNT_KEY, DataType.INTEGER);
+            var votes = playerPdc.get(plugin.VOTE_COUNT_KEY, DataType.INTEGER);
             if (votes > maxVotes) {
                 maxPlayer = p;
                 maxVotes = votes;
@@ -105,7 +105,7 @@ public class NightPhase extends CommandBase {
             var role = playerPdc.get(plugin.ROLE_KEY, DataType.STRING);
             Msg.broadcast(players, "&c" + maxPlayer.getName() + " has been lynched! They were the &b" + role);
 
-            playerPdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, 0);
+            playerPdc.set(plugin.VOTE_COUNT_KEY, DataType.INTEGER, 0);
             playerPdc.set(plugin.IS_ALIVE_KEY, DataType.BOOLEAN, false);
 
             --numAlive;

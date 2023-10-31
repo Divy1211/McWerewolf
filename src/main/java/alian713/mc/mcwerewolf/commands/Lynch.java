@@ -66,8 +66,8 @@ public class Lynch extends CommandBase {
             return true;
         }
 
-        var votes = targetPdc.get(plugin.NOM_COUNT_KEY, DataType.INTEGER);
-        targetPdc.set(plugin.NOM_COUNT_KEY, DataType.INTEGER, votes + 1);
+        var votes = targetPdc.get(plugin.VOTE_COUNT_KEY, DataType.INTEGER);
+        targetPdc.set(plugin.VOTE_COUNT_KEY, DataType.INTEGER, votes + 1);
 
         pdc.set(plugin.HAS_VOTED, DataType.BOOLEAN, true);
         Msg.send(player, "&cYou've voted to lynch " + target.getName() + "!");
